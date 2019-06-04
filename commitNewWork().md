@@ -227,4 +227,4 @@ func (self *worker) push(work *Work) {
 8、准备新区块的叔区块uncles[]，来源是worker.possibleUncles[]，而possibleUncles[]中的每个区块都从事件ChainSideEvent中搜集得到。注意叔区块最多有两个。
 9、调用Engine.Finalize()函数，对新区块“定型”，填充上Header.Root, TxHash, ReceiptHash, UncleHash等几个属性。
 10、如果上一个区块(即旧的链头区块)处于unconfirmedBlocks中，意味着它也是由本节点挖掘出来的，尝试去验证它已经被吸纳进主干链中。
-11、把创建的Work对象，通过channel发送给每一个登记过的Agent，进行后续的挖掘。
+11、把创建的Work对象，通过channel发送给每一个登记过的Agent，进行后续的挖掘
