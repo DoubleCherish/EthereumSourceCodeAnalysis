@@ -217,6 +217,7 @@ func (self *worker) push(work *Work) {
 
 ​	虽然上面只是一个小流程，但是已经完整的组装出来一个block  最后提交到agent ，剩下等待“挖矿”成功后上链
 流程如下：
+	
 	1、准备新区块的时间属性Header.Time，一般均等于系统当前时间，不过要确保父区块的时间(parentBlock.Time())要早于新区块的时间，父区块当然来自当前区块链的链头了。
 
 	2、创建新区块的Header对象，其各属性中：Num可确定(父区块Num +1)；Time可确定；ParentHash可确定;其余诸如Difficulty，GasLimit等，均留待之后共识算法中确定。
