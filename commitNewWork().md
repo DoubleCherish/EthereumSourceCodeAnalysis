@@ -217,14 +217,24 @@ func (self *worker) push(work *Work) {
 
 ​	虽然上面只是一个小流程，但是已经完整的组装出来一个block  最后提交到agent ，剩下等待“挖矿”成功后上链
 流程如下：
-1、准备新区块的时间属性Header.Time，一般均等于系统当前时间，不过要确保父区块的时间(parentBlock.Time())要早于新区块的时间，父区块当然来自当前区块链的链头了。
-2、创建新区块的Header对象，其各属性中：Num可确定(父区块Num +1)；Time可确定；ParentHash可确定;其余诸如Difficulty，GasLimit等，均留待之后共识算法中确定。
-3、调用Engine.Prepare()函数，完成Header对象的准备。
-4、根据新区块的位置(Number)，查看它是否处于DAO硬分叉的影响范围内，如果是，则赋值予header.Extra。
-5、根据已有的Header对象，创建一个新的Work对象，并用其更新worker.current成员变量。
-6、如果配置信息中支持硬分叉，在Work对象的StateDB里应用硬分叉。
-7、准备新区块的交易列表，来源是TxPool中那些最近加入的tx，并执行这些交易。
-8、准备新区块的叔区块uncles[]，来源是worker.possibleUncles[]，而possibleUncles[]中的每个区块都从事件ChainSideEvent中搜集得到。注意叔区块最多有两个。
-9、调用Engine.Finalize()函数，对新区块“定型”，填充上Header.Root, TxHash, ReceiptHash, UncleHash等几个属性。
-10、如果上一个区块(即旧的链头区块)处于unconfirmedBlocks中，意味着它也是由本节点挖掘出来的，尝试去验证它已经被吸纳进主干链中。
-11、把创建的Work对象，通过channel发送给每一个登记过的Agent，进行后续的挖掘
+	1、准备新区块的时间属性Header.Time，一般均等于系统当前时间，不过要确保父区块的时间(parentBlock.Time())要早于新区块的时间，父区块当然来自当前区块链的链头了。
+
+	2、创建新区块的Header对象，其各属性中：Num可确定(父区块Num +1)；Time可确定；ParentHash可确定;其余诸如Difficulty，GasLimit等，均留待之后共识算法中确定。
+	
+	3、调用Engine.Prepare()函数，完成Header对象的准备。
+	
+	4、根据新区块的位置(Number)，查看它是否处于DAO硬分叉的影响范围内，如果是，则赋值予header.Extra。
+	
+	5、根据已有的Header对象，创建一个新的Work对象，并用其更新worker.current成员变量。
+	
+	6、如果配置信息中支持硬分叉，在Work对象的StateDB里应用硬分叉。
+	
+	7、准备新区块的交易列表，来源是TxPool中那些最近加入的tx，并执行这些交易。
+	
+	8、准备新区块的叔区块uncles[]，来源是worker.possibleUncles[]，而possibleUncles[]中的每个区块都从事件ChainSideEvent中搜集得到。注意叔区块最多有两个。
+	
+	9、调用Engine.Finalize()函数，对新区块“定型”，填充上Header.Root, TxHash, ReceiptHash, UncleHash等几个属性。
+	
+	10、如果上一个区块(即旧的链头区块)处于unconfirmedBlocks中，意味着它也是由本节点挖掘出来的，尝试去验证它已经被吸纳进主干链中。
+	
+	11、把创建的Work对象，通过channel发送给每一个登记过的Agent，进行后续的挖掘
