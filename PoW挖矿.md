@@ -162,7 +162,7 @@ func (self *worker) update() {
 
 
 ```java
-commitNewWork()在另外一篇违章中已经单独分析，接下来主要分析worker.wait()
+commitNewWork()在另外一篇文章中已经单独分析，接下来主要分析worker.wait()
 func (self *worker) wait() {
 	for {
 		mustCommitNewWork := true
