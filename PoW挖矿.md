@@ -480,7 +480,7 @@ out:
 
 挖矿简单来讲就是找到符合如下公式的一个nonce
 
-​							rand(n,d)=M/D  (n:nonce , d:digest, M:uint256Max,D:Diffculty)
+​							rand(n,h)=M/D  (n:nonce , h:headerHashNoNonce, M:uint256Max,D:Diffculty)
 
 ​		首先挖矿结构体（Miner）组合了一个worker ，在New Miner时候会先去NewWorker，NewWorker的时候会订阅相关事件，并且开启两个主要线程 `go worker.update()` 和`go worker.wait()` ，前一个主要遍历事件做出相应动作 ，commitNewWork()将一个新的区块的header填充好，交易执行完成，奖励发送到相应矿工和挖出叔块的地址后将结果封装为一个work提交给注册的实际的“矿工”，例如CpuAgent进行“挖矿”操作，CpuAgent拿到work以后开始调用共识引擎（ethash）的Seal(对外,mine对内)进行共识计算，计算找到一个合适的nonce 时候将结果提交到一个结果通道，此时worker.wait()开始拿到结果进行实际插入到blockchain，并进行事件广播。
 
