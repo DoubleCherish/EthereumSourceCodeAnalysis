@@ -466,7 +466,7 @@ func (pool *TxPool) add(tx *types.Transaction, local bool) (bool, error) {
 
 		return old != nil, nil
 	}
-	//  新交易没有不存在与发送账户的pending的列表  直接放入queue中
+	//  新交易不存在于发送账户的pending列表中  那么直接放入账户地址所对应的queue中
 	// New transaction isn't replacing a pending one, push into queue
 	replace, err := pool.enqueueTx(hash, tx)
 	if err != nil {
@@ -494,7 +494,7 @@ add()方法主要将一个交易加入交易池中，主要做了以下事情：
 * 首先先判断交易是否已经存在all中，若存在那么直接返回
 * 对交易进行基础校验，如tx大小必须小于32KB、签名非负、gas不能超过限制、验证签名者、非本地交易要确保gasPrice大于gas最低限制、nonce需要大于账户当前nonce、账户余额必须大于当前交易的花费、gas数量必须大于固有gas消耗等
 * 判断池中all交易是否大于pending+queue的总数，如果大于则进行交易drop，若当前交易gasPrice小于池中所有交易，那么直接返回，要不然将池中超出限制的gasprice倒叙排列的n个交易再加上1个交易drop掉
-* 如果账户pending列表存在，而且此次tx的nonce再pending中已经存在，那么尝试替换已有的（gasPrice大于已有的交易情况下可以替换成功），替换成功后将老的交易从all里面删除，重新构建priced结构，在all里面添加新的交易，在priced里面放入新的交易，若是本地交易，将此交易插入到本地交易池中方便下次持久化到数据库，最后广播交易。
+* 如果账户pending列表存在，而且此次tx的nonce在pending中已经存在，那么尝试替换已有的（gasPrice大于已有的交易情况下可以替换成功），替换成功后将老的交易从all里面删除，重新构建priced结构，在all里面添加新的交易，在priced里面放入新的交易，若是本地交易，将此交易插入到本地交易池中方便下次持久化到数据库，最后广播交易。
 * 若账户不存在pending列表，那么直接将此交易放入queue里面
 
 ###### 2.5 demoteUnexecutables()方法分析
@@ -533,7 +533,7 @@ func (pool *TxPool) demoteUnexecutables() {
 			log.Trace("Demoting pending transaction", "hash", hash)
 			pool.enqueueTx(hash, tx)
 		}
-		// 经过排除nonce低的交易，花费较大的交易以后，判断账户pending是否还大于0且且pending列表中不存在跟当前nonce值相同的交易 那么将此地址的pending列表的交易全部取出来放入queue中
+		// 经过排除nonce低的交易，花费较大的交易以后，判断账户pending如果还大于0且pending列表中不存在跟当前nonce值相同的交易 那么将此地址的pending列表的交易全部取出来放入queue中
 		// If there's a gap in front, alert (should never happen) and postpone all transactions
 		if list.Len() > 0 && list.txs.Get(nonce) == nil {
 			for _, tx := range list.Cap(0) {
@@ -610,7 +610,7 @@ func (pool *TxPool) promoteExecutables(accounts []common.Address) {
 			queuedNofundsCounter.Inc(1)
 		}
 		// 将账户所有queue里面交易列表里面nonce准备好的交易取出来进行升级
-         // 准备好的交易可以理解为将pending里面nonce值大于等于账户当前状态nonce的且nonce连续的几笔交易作为准备好的交易
+         // 准备好的交易可以理解为将queue里面nonce值大于等于账户当前状态nonce的且nonce连续的几笔交易作为准备好的交易
 		// Gather all executable transactions and promote them
 		for _, tx := range list.Ready(pool.pendingState.GetNonce(addr)) {
 			hash := tx.Hash()
@@ -670,7 +670,6 @@ func (pool *TxPool) promoteExecutables(accounts []common.Address) {
 		offenders := []common.Address{}
 		// 如果pending总数大于 全局槽位  且要处理掉的队列不为空
 		for pending > pool.config.GlobalSlots && !spammers.Empty() {
-			// 在此循环内部 要求offenders 最少存在两个惩罚者 且是pending tx最多的两个
 			// Retrieve the next offender if not local address
 			offender, _ := spammers.Pop()
 			offenders = append(offenders, offender.(common.Address))
