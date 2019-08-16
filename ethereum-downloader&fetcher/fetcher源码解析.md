@@ -88,7 +88,7 @@ case msg.Code == NewBlockMsg:
 
 上面就是使用到Fetcher的主要消息，下面来使用一张图来总览下Fetcher的流程：
 
-![Notify](C:\Users\Administrator\Desktop\MyDoc\Notify.png)
+![Notify](https://github.com/DoubleCherish/EthereumSourceCodeAnalysis/blob/master/ethereum-downloader%26fetcher/images/Notify.png)
 
 先从区块消息来讲解，当一个新的区块产生时候，在ProtocolManager的区块广播执行时候会对一部分节点只发送区块的hash和number，此时一个以太坊节点收到的消息就是NewBlockHashesMsg，从上面的case语句可知，此时会调用`pm.fetcher.Notify(p.id, block.Hash, block.Number, time.Now(), p.RequestOneHeader, p.RequestBodies)`，方法传入了peer的id信息、block的hash和number、接收到消息时候的时间戳、用来请求header和blockBody的两个函数。 p.RequestOneHeader, p.RequestBodies方法实现如下：
 
