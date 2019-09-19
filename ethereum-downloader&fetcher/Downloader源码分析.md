@@ -272,7 +272,7 @@ func (d *Downloader) syncWithPeer(p *peerConnection, hash common.Hash, td *big.I
 
 ​	3、开始逐个执行 [d.fetchHeaders(p, origin+1, pivot)，d.fetchBodies(origin + 1)，d.fetchReceipts(origin + 1)，d.processHeaders(origin+1, pivot, td)]+d.processFastSyncContent(latest) or d.processFullSyncContent 方法，方法流转图如下：
 
-​			![downloader](C:\Users\Administrator\Desktop\Downloader\downloader.png)
+​			![downloader](https://github.com/DoubleCherish/EthereumSourceCodeAnalysis/blob/master/ethereum-downloader%26fetcher/images/downloader.png)
 
 ​		下面逐个介绍[d.fetchHeaders(p, origin+1, pivot)，d.fetchBodies(origin + 1)，d.fetchReceipts(origin + 1)，d.processHeaders(origin+1, pivot, td)]+d.processFastSyncContent(latest) or d.processFullSyncContent 方法
 
