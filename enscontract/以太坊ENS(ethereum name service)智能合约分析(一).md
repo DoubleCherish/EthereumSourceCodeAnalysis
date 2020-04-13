@@ -10,7 +10,7 @@
 
 ​		ENS中有两大组件：注册器和解析器。
 
-![ens-architecture](C:\Users\Administrator\Desktop\ensdoc\ens-architecture.png)
+![ens-architecture](https://github.com/DoubleCherish/EthereumSourceCodeAnalysis/blob/master/enscontract/images/ens-architecture.png)
 
 ENS注册器由一个只能合约组成，其内部维护了一个列表包括了所有的域名和子域名，同时存储了每个域名的三个关键信息：
 
@@ -28,7 +28,7 @@ ENS注册器由一个只能合约组成，其内部维护了一个列表包括�
 
 一个域名的解析一般分为两个步骤：① 首先询问ENS注册器对应域名的解析器地址 ② 再使用对应域名去解析器查询域名对应的实际地址是什么。步骤如下图
 
-![resolver](C:\Users\Administrator\Desktop\ensdoc\resolver.png)
+![resolver](https://github.com/DoubleCherish/EthereumSourceCodeAnalysis/blob/master/enscontract/images/resolver.png)
 
 ##### 2、初版ENS合约代码分析
 
